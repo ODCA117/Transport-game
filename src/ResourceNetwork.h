@@ -12,17 +12,18 @@ class ResourceNode;
      void* getNode(int id); // void* that needs to be casted.
      int size();
 
+
  };
 
 class ResourceNode {
 protected:
-    std::vector<ResourceNode> nodes;
+    std::vector<ResourceNode*> nodes;
     int id;
 public:
     //ResourceNode();
     ResourceNode(int id);
-    void addNode(ResourceNode node);
-    ResourceNode removeNode(ResourceNode node);
+    void addNode(ResourceNode* node);
+    ResourceNode removeNode(ResourceNode* node);
     bool operator==(const ResourceNode rhs);
     int getId();
     std::string toString();

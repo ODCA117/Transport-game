@@ -31,26 +31,22 @@ bool ResourceNode::operator==(const ResourceNode rhs) {
     return res;
 }
 
-void ResourceNode::addNode(ResourceNode node) {
+void ResourceNode::addNode(ResourceNode* node) {
     nodes.push_back(node);
 }
 
-ResourceNode ResourceNode::removeNode(ResourceNode node) {
+ResourceNode ResourceNode::removeNode(ResourceNode* node) {
     for(unsigned int i = 0; i < nodes.size(); i++) {
-        if(node == nodes[i]) {
+        if(*node == *nodes[i]) {
             nodes.erase(nodes.begin() +i);
         }
     }
-    return node;
+    return *node;
 }
 
 int ResourceNode::getId(){
     return id;
 }
-
-// std::string ResourceNode::toString(){
-//     return std::to_string(id);
-// }
 
 /* |-----------------------------------------------|*/
 /* |************ProducerNode***********************|*/
@@ -81,7 +77,7 @@ std::string ProducerNode::toString() {
     }
     for (int i = 0; i < nodes.size(); ++i)
     {
-        str += (nodes[i].getId());
+        str += std::to_string((nodes[i]->getId())) + " ";
     }
 
     return str;
@@ -107,13 +103,15 @@ std::string ConsumerNode::toString() {
         std::to_string(maxCons) + "\t" +
         std::to_string(currentCons) + "\t" +
         std::to_string(supply) + "\t";
+    /* if we need the suppliers for the node we print this
     if(nodes.size() == 0) {
         str += "Empty";
     }
     for (int i = 0; i < nodes.size(); ++i)
     {
-        str += (nodes[i].getId());
+        str += std::to_string((nodes[i]->getId())) + " ";
     }
+    */
 
     return str;
 }
