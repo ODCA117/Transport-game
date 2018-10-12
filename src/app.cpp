@@ -8,7 +8,7 @@
     There is a structure for the nodes in the production network,
     It is possible to print the different values in the console
 
-    TODO: Fix gameloop so that it works without problems, now it can be stuck in infinite loop.
+    TODO: Fix gameloop so that it works with both single and multiply args
     TODO: Create algorithim to decide production based on the demand when there exists a tranport opportunity betweeb the nodes
     TODO: Implement a refinery node which can refine resources if there is a supply
     TODO: Create a better printing methos
@@ -34,31 +34,27 @@ void printWorld(ResourceNetwork net) {
 
 int gameloop(ResourceNetwork net) {
 
-    char command;
+    std::string command;
     int arg1, arg2;
     std::cout << "Enter command for what to do" << "\n";
     std::cin >> command >> arg1 >> arg2;
-    switch (command)
-    {
-    case 'a': // add node arg2 to node arg1.
+    std::cout << command << "\n";
+
+    if(command == "add") {
         std::cout << "add " << std::to_string(arg1) << " to " << std::to_string(arg2) << "\n";
 
         ((ResourceNode*)net.getNode(arg1))->addNode(((ResourceNode*)net.getNode(arg2)));
-        break;
-
-    case 'r': // remove node arg2 from arg1
+    }
+    else if ( command == "rm") {
         std::cout << "remove " << std::to_string(arg1) << " from " << std::to_string(arg2) << "\n";
         ((ResourceNode*)net.getNode(arg1))->removeNode(((ResourceNode*)net.getNode(arg2)));
-        break;
-
-    case 'e': //Exit gameloop
+    }
+    else if (command == "exit") {
         std::cout << "Exit loop" << "\n";
         loop = 0;
-        break;
-
-    default:
+    }
+    else {
         std::cout << "command not found retry" << "\n";
-        break;
     }
 
     printWorld(net);
@@ -81,6 +77,7 @@ int main(int argc, char* argv[])
     loop = 1;
     while(loop != 0) {
         gameloop(rnet);
+        std::cout << std::to_string(loop) << "\n";
     }
 
     return 0;
