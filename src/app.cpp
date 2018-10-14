@@ -10,10 +10,14 @@
     what is finished?
     There is a structure for the nodes in the production network,
     It is possible to print the different values in the console
+    The production algotithm is right now implemented
 
 
-    TODO: separate demand between different producer, consumer knows how many producers it has
     TODO: Implement a refinery node which can refine resources if there is a supply
+    TODO: Create a transport network which accepts a resource and an adress and sends the resource to that address
+    TODO: Transport multiple resources at the same time but with higher time interval
+    TODO: Separate demand between different producer, consumer knows how many producers it has
+    TODO: Add different types of resources.
     TODO: Create a better printing methos
  */
 
