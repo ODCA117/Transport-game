@@ -1,6 +1,9 @@
 #include <iostream>
+#include <sstream>
+#include <iterator>
 #include <random>
 #include <memory>
+#include <vector>
 #include "ResourceNetwork.h"
 
 /*
@@ -32,26 +35,44 @@ void printWorld(ResourceNetwork net) {
     }
 }
 
-int gameloop(ResourceNetwork net) {
+//simulation for the program in current state
+void gameloop(ResourceNetwork net) {
 
+    //prompt user for command
     std::string command;
-    int arg1, arg2;
     std::cout << "Enter command for what to do" << "\n";
-    std::cin >> command >> arg1 >> arg2;
-    std::cout << command << "\n";
+    std::getline(std::cin, command);
 
-    if(command == "add") {
-        std::cout << "add " << std::to_string(arg1) << " to " << std::to_string(arg2) << "\n";
+    //split command by spaces
+    std::istringstream iss(command);
+    std::vector<std::string> args(
+        (std::istream_iterator<std::string>(iss)),
+         std::istream_iterator<std::string>());
+
+    if (args[0] == "exit") {
+        //user wants to quit
+        std::cout << "Exit loop" << "\n";
+        loop = 0;
+        return;
+    }
+
+    else if (args.size() < 3) {
+        //not enough arguments try again
+        std::cout << "not enough arguments" << "\n";
+        return;
+    }
+
+    //arguments after
+    int arg1 = std::stoi(args[1]);
+    int arg2 = std::stoi(args[2]);
+    if(args[0] == "add") {
+        std::cout << "add " << args[1] << " to " << args[2] << "\n";
 
         ((ResourceNode*)net.getNode(arg1))->addNode(((ResourceNode*)net.getNode(arg2)));
     }
-    else if ( command == "rm") {
+    else if (args[0] == "rm") {
         std::cout << "remove " << std::to_string(arg1) << " from " << std::to_string(arg2) << "\n";
         ((ResourceNode*)net.getNode(arg1))->removeNode(((ResourceNode*)net.getNode(arg2)));
-    }
-    else if (command == "exit") {
-        std::cout << "Exit loop" << "\n";
-        loop = 0;
     }
     else {
         std::cout << "command not found retry" << "\n";
@@ -77,7 +98,6 @@ int main(int argc, char* argv[])
     loop = 1;
     while(loop != 0) {
         gameloop(rnet);
-        std::cout << std::to_string(loop) << "\n";
     }
 
     return 0;
