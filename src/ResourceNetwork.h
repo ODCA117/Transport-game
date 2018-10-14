@@ -9,10 +9,8 @@ class ResourceNode;
      std::vector<ResourceNode*> nodes;
  public:
      ResourceNetwork(std::vector<ResourceNode*> nodes);
-     void* getNode(int id); // void* that needs to be casted.
+     void* getNode(int id); // void* that needs to be casted when used.
      int size();
-
-
  };
 
 class ResourceNode {
@@ -20,7 +18,6 @@ protected:
     std::vector<ResourceNode*> nodes;
     int id;
 public:
-    //ResourceNode();
     ResourceNode(int id);
     void addNode(ResourceNode* node);
     ResourceNode removeNode(ResourceNode* node);
@@ -33,19 +30,26 @@ public:
 class ProducerNode : public ResourceNode {
 private:
     int maxProd, currentProd, demanded;
+    void updateCurrentProd();
+    void updateDemanded();
+
 public:
     ProducerNode(int id);
-    void updateDemanded(int val);
+    void update(double deltaTime);
     int getCurrentProd();
     std::string toString();
-
 };
 
 class ConsumerNode : public ResourceNode {
 private:
     int maxCons, currentCons, supply;
+    void updateCurrentCons();
+
 public:
     ConsumerNode(int id);
+    void update(double deltaTime);
     void updateMaxCons(int val);
+    int getDemand();
+    void addSupply(int amount);
     std::string toString();
 };

@@ -11,8 +11,8 @@
     There is a structure for the nodes in the production network,
     It is possible to print the different values in the console
 
-    TODO: Fix gameloop so that it works with both single and multiply args
-    TODO: Create algorithim to decide production based on the demand when there exists a tranport opportunity betweeb the nodes
+
+    TODO: separate demand between different producer, consumer knows how many producers it has
     TODO: Implement a refinery node which can refine resources if there is a supply
     TODO: Create a better printing methos
  */
@@ -21,7 +21,7 @@ int loop;
 
 void printWorld(ResourceNetwork net) {
     std::cout << std::to_string(net.size()) << "\n";
-    std::cout << "Name \t maxProd \t curProd \t demanded \t Demanders" << "\n";
+    std::cout << "Name\t maxProd \t curProd \t demanded \t Demanders" << "\n";
     for (int i = 0; i < net.size()/2; ++i)
     {
         std::cout << ((ProducerNode*)net.getNode(i))->toString() << "\n";
@@ -49,7 +49,11 @@ void gameloop(ResourceNetwork net) {
         (std::istream_iterator<std::string>(iss)),
          std::istream_iterator<std::string>());
 
-    if (args[0] == "exit") {
+    if (args[0] == "loop") {
+        std::cout << "loop one time" << "\n";
+        return;
+    }
+    else if (args[0] == "exit") {
         //user wants to quit
         std::cout << "Exit loop" << "\n";
         loop = 0;
@@ -77,8 +81,26 @@ void gameloop(ResourceNetwork net) {
     else {
         std::cout << "command not found retry" << "\n";
     }
+}
 
-    printWorld(net);
+void update(ResourceNetwork net) {
+
+    //first loop through all Consumers then all the producers
+    std::cout << "Update" << "\n";
+    for (int i = net.size()/2; i < net.size(); ++i)
+    {
+        //Consumer Loop
+        ((ConsumerNode*)net.getNode(i))->update(0.3);
+
+    }
+
+    for (int i = 0; i < net.size()/2; ++i)
+    {
+        //Producer Loop
+        ((ProducerNode*)net.getNode(i))->update(0.3);
+
+    }
+
 }
 
 int main(int argc, char* argv[])
@@ -98,6 +120,8 @@ int main(int argc, char* argv[])
     loop = 1;
     while(loop != 0) {
         gameloop(rnet);
+        update(rnet);
+        printWorld(rnet);
     }
 
     return 0;

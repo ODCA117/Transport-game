@@ -1,4 +1,5 @@
 #include "ResourceNetwork.h"
+#include <iostream>
 
 /* -------------------------------------------------*/
 /* -------------ResourceNetwork------------------------*/
@@ -57,9 +58,45 @@ ProducerNode::ProducerNode(int id) : ResourceNode(id) {
     currentProd = 0;
     demanded = 0;
 }
-void ProducerNode::updateDemanded(int val) {
-    demanded = val;
+
+/* ---------------Private Functions------------------------*/
+
+void ProducerNode::updateCurrentProd() {
+    updateDemanded();
+    if(demanded >= maxProd) {
+        currentProd = maxProd;
+    }
+
+    else if (demanded == 0) {
+        currentProd = 0;
+    }
+
+    else {
+        int prodRatio = (100*demanded)/maxProd;
+        currentProd = (prodRatio * maxProd)/100;
+    }
 }
+
+void ProducerNode::updateDemanded() {
+    demanded = 0;
+    for (int i = 0; i < nodes.size(); ++i)
+    {
+        demanded += ((ConsumerNode*)nodes[i])->getDemand();
+    }
+}
+
+/* ---------------Public Functions------------------------*/
+
+void ProducerNode::update(double deltaTime) {
+    updateCurrentProd();
+
+    for(int i = 0; i < nodes.size(); i++) {
+        int added = (currentProd/nodes.size())*deltaTime;
+        ((ConsumerNode*)nodes[i])->addSupply(added);
+    }
+
+}
+
 int ProducerNode::getCurrentProd(){
     return currentProd;
 }
@@ -92,8 +129,58 @@ ConsumerNode::ConsumerNode(int id) : ResourceNode(id) {
     currentCons = 0;
     supply = 0;
 }
+
+/* ---------------Private Functions------------------------*/
+
+void ConsumerNode::updateCurrentCons() {
+    if(supply >= maxCons) {
+        currentCons = maxCons;
+    }
+
+    else if (supply == 0) {
+        currentCons = 0;
+    }
+
+    else {
+        int supRatio = (100*supply)/maxCons;
+        currentCons = (supRatio * maxCons)/100;
+    }
+}
+
+/* ---------------Public Functions------------------------*/
+
+void ConsumerNode::update(double deltaTime) {
+    updateCurrentCons();
+    int consumed = currentCons*deltaTime;
+    supply -= consumed;
+
+}
+
 void ConsumerNode::updateMaxCons(int val) {
     maxCons = val;
+}
+
+
+/*
+    Return demand equal to max production as long as the supply is less than maxCons
+    Return 0 if the supply exides 5 max cons;
+    return maxCons / supply if supply is grater than maxCons
+ */
+int ConsumerNode::getDemand(){
+
+    if(supply < maxCons) {
+        return maxCons;
+    }
+    else if(supply > (5*maxCons)) {
+        return 0;
+    }
+    else {
+        return (maxCons/(double)supply) * 100;
+    }
+}
+
+void ConsumerNode::addSupply(int amount) {
+    supply += amount;
 }
 
 std::string ConsumerNode::toString() {
@@ -103,15 +190,6 @@ std::string ConsumerNode::toString() {
         std::to_string(maxCons) + "\t" +
         std::to_string(currentCons) + "\t" +
         std::to_string(supply) + "\t";
-    /* if we need the suppliers for the node we print this
-    if(nodes.size() == 0) {
-        str += "Empty";
-    }
-    for (int i = 0; i < nodes.size(); ++i)
-    {
-        str += std::to_string((nodes[i]->getId())) + " ";
-    }
-    */
 
     return str;
 }
