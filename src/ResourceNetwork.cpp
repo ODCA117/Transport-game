@@ -161,11 +161,7 @@ void ConsumerNode::updateMaxCons(int val) {
 }
 
 
-/*
-    Return demand equal to max production as long as the supply is less than maxCons
-    Return 0 if the supply exides 5 max cons;
-    return maxCons / supply if supply is grater than maxCons
- */
+
 int ConsumerNode::getDemand(){
 
     if(supply < maxCons) {
@@ -193,3 +189,62 @@ std::string ConsumerNode::toString() {
 
     return str;
 }
+
+/* this can be implemended in a daimond way when I learn about that*/
+/* -------------------------------------------------*/
+/* -------------RefineryNode------------------------*/
+/* -------------------------------------------------*/
+//
+// RefineryNode::RefineryNode(int id) : ResourceNode(id)  {
+//     maxProd = 100;
+//     currentProd = 0;
+//     demanded = 0;
+//     maxCons = 100;
+//     currentCons = 0;
+//     supply = 0;
+// }
+//
+// /* -------------private------------------------*/
+// void RefineryNode::updateCurrentProd(){
+//     updateDemanded();
+//     if(demanded >= maxProd) {
+//         currentProd = maxProd;
+//     }
+//
+//     else if (demanded == 0) {
+//         currentProd = 0;
+//     }
+//
+//     else {
+//         int prodRatio = (100*demanded)/maxProd;
+//         currentProd = (prodRatio * maxProd)/100;
+//     }
+//
+// }
+// void RefineryNode::updateCurrentCons(){
+//     if(supply >= maxCons) {
+//         currentCons = maxCons;
+//     }
+//
+//     else if (supply == 0) {
+//         currentCons = 0;
+//     }
+//
+//     else {
+//         int supRatio = (100*supply)/maxCons;
+//         currentCons = (supRatio * maxCons)/100;
+//     }
+// }
+// void RefineryNode::updateDemanded(){
+//     demanded = 0;
+//     for (int i = 0; i < nodes.size(); ++i)
+//     {
+//         demanded += ((ConsumerNode*)nodes[i])->getDemand();
+//     }
+// }
+//
+// /* -------------public------------------------*/
+// void RefineryNode::update(double deltaTime) {
+//     updateCurrentCons();
+//     updateCurrentProd();
+// }

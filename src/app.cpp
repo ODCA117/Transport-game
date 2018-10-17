@@ -15,10 +15,11 @@
 
     TODO: Implement a refinery node which can refine resources if there is a supply
     TODO: Create a transport network which accepts a resource and an adress and sends the resource to that address
-    TODO: Transport multiple resources at the same time but with higher time interval
+    TODO: Use multiple resources
     TODO: Separate demand between different producer, consumer knows how many producers it has
     TODO: Add different types of resources.
     TODO: Create a better printing methos
+    TODO: Remove duplicated code frome refinery
  */
 
 int loop;

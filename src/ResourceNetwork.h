@@ -53,3 +53,22 @@ public:
     void addSupply(int amount);
     std::string toString();
 };
+
+class RefineryNode : public ResourceNode {
+private:
+    //producer attributes
+    int maxProd, currentProd, demanded;
+    //consumer attributes
+    int maxCons, currentCons, supply;
+    void updateCurrentProd();
+    void updateCurrentCons();
+    void updateDemanded();
+public:
+    RefineryNode(int id);
+    void update(double deltaTime);
+    int getCurrentProd();
+    void updateMaxCons(int val);
+    int getDemand();
+    void addSupply(int amount);
+    std::string toString();
+};
