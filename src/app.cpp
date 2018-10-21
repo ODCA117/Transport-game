@@ -13,13 +13,14 @@
     It is possible to print the different values in the console
     The production algotithm is right now implemented
 
-    TODO: Implement a refinery node which can refine resources if there is a supply
+    TODO: remove the ResourceNetwork
+    TODO: create translate function from id to index.
     TODO: Create a transport network which accepts a resource and an adress and sends the resource to that address
-    TODO: Use multiple resources
     TODO: Separate demand between different producer, consumer knows how many producers it has
+    TODO: Use multiple resources
     TODO: Add different types of resources.
-    TODO: Create a better printing methos
-    TODO: Remove duplicated code frome refinery
+    TODO: Create a better printing methods
+    TODO: Implement a refinery node which can refine resources if there is a supply
  */
 
 int loop;
@@ -78,7 +79,8 @@ void gameloop(ResourceNetwork *net) {
         std::cout << "add " << args[1] << " to " << args[2] << "\n";
 
 /************* THIS IS WRONG HERE ***************************/
-        ((ProducerNode*)net->getNode(arg1))->addNode(((ConsumerNode*)net->getNode(arg2)));
+        ConsumerNode *node = (ConsumerNode*)net->getNode(arg2);
+        ((ProducerNode*)net->getNode(arg1))->addNode(node);
     }
     else if (args[0] == "rm") {
         std::cout << "remove " << std::to_string(arg1) << " from " << std::to_string(arg2) << "\n";
@@ -119,11 +121,11 @@ int main(int argc, char* argv[])
     ResourceNetwork *rnet = new ResourceNetwork();
     for (int i = 0; i < 5; ++i)
     {
-        ProducerNode pnode(i);// = new ProducerNode(i);
-        ConsumerNode cnode(i+5);// = new ConsumerNode(i + 5);
+        ProducerNode *pnode = new ProducerNode(i);
+        ConsumerNode *cnode = new ConsumerNode(i + 5);
 
-        rnet->addNode(&pnode);
-        rnet->addNode(&cnode);
+        rnet->addNode(pnode);
+        rnet->addNode(cnode);
     }
 
     int id = ((ProducerNode*)rnet->getNode(0))->getId();

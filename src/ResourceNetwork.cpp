@@ -6,9 +6,10 @@
 /* -------------------------------------------------*/
 ResourceNetwork::ResourceNetwork() {
     nodes = new std::vector<ResourceNode*>();
+    nodes->reserve(20);
 }
-ResourceNetwork::ResourceNetwork(std::vector<ResourceNode*> net){
-    nodes->insert(nodes->end(),net.begin(), net.end());
+ResourceNetwork::ResourceNetwork(std::vector<ResourceNode*> *net){
+    nodes = net;
 }
 void* ResourceNetwork::getNode(int id ){
     for (unsigned int i = 0; i < nodes->size(); ++i)
@@ -23,6 +24,13 @@ void* ResourceNetwork::getNode(int id ){
 
 void ResourceNetwork::addNode(ResourceNode *node){
     nodes->push_back(node);
+
+    for(int i = 0; i < nodes->size(); i++) {
+        std::cout << "Added in network id: " << nodes->at(i)->getId() << "\n";
+    }
+
+    std::cout << "\n";
+
 
 }
 
@@ -58,6 +66,7 @@ bool ResourceNode::operator==(const ResourceNode rhs) {
 
 void ResourceNode::addNode(ResourceNode *node) {
     rnet->addNode(node);
+    int id = node->getId();
 }
 
 ResourceNode ResourceNode::removeNode(int id) {
@@ -81,12 +90,8 @@ ProducerNode::ProducerNode(int id) : ResourceNode(id) {
 void ProducerNode::updateDemanded() {
     demanded = 0;
     printf("size of rnet: %d \n", rnet->size());
-    for (int i = 0; i < rnet->size(); ++i)
-    {
-        printf("before demanded\n" );
-        printf("%x\n", rnet->getNode(id));
-        //demanded += ((ConsumerNode*)rnet.getNode(i))->getDemand();
-    }
+
+
 }
 
 /* ---------------Private Functions------------------------*/
@@ -115,7 +120,7 @@ void ProducerNode::update(double deltaTime) {
 
     for(int i = 0; i < rnet->size(); i++) {
         int added = (currentProd/rnet->size())*deltaTime;
-        ((ConsumerNode*)rnet->getNode(i))->addSupply(added);
+        ((ConsumerNode*)rnet->getNode(i))->addSupply(added);//id not index
     }
 
 }
@@ -217,6 +222,8 @@ std::string ConsumerNode::toString() {
 
     return str;
 }
+
+
 
 /* this can be implemended in a daimond way when I learn about that*/
 /* -------------------------------------------------*/

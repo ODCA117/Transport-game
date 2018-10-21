@@ -12,7 +12,7 @@ class ResourceNode;
      std::vector<ResourceNode*> *nodes;
  public:
      ResourceNetwork();
-     ResourceNetwork(std::vector<ResourceNode*> nodes);
+     ResourceNetwork(std::vector<ResourceNode*> *nodes);
      void* getNode(int id); // void* that needs to be casted when used.
      void addNode(ResourceNode* node);
      int removeNode(int id);
