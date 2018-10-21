@@ -41,7 +41,7 @@ void printWorld(ResourceNetwork net) {
 }
 
 //simulation for the program in current state
-void gameloop(ResourceNetwork net) {
+void gameloop(ResourceNetwork *net) {
 
     //prompt user for command
     std::string command;
@@ -77,12 +77,12 @@ void gameloop(ResourceNetwork net) {
     if(args[0] == "add") {
         std::cout << "add " << args[1] << " to " << args[2] << "\n";
 
-/************* THIS IS WRONG HERE ***************************/        
-        ((ResourceNode*)net.getNode(arg1))->addNode(((ResourceNode*)net.getNode(arg2)));
+/************* THIS IS WRONG HERE ***************************/
+        ((ProducerNode*)net->getNode(arg1))->addNode(((ConsumerNode*)net->getNode(arg2)));
     }
     else if (args[0] == "rm") {
         std::cout << "remove " << std::to_string(arg1) << " from " << std::to_string(arg2) << "\n";
-        ((ResourceNode* )net.getNode(arg1))->removeNode(arg2);
+        ((ResourceNode* )net->getNode(arg1))->removeNode(arg2);
     }
     else {
         std::cout << "command not found retry" << "\n";
@@ -119,12 +119,15 @@ int main(int argc, char* argv[])
     ResourceNetwork *rnet = new ResourceNetwork();
     for (int i = 0; i < 5; ++i)
     {
-        ProducerNode *pnode = new ProducerNode(i);
-        ConsumerNode *cnode = new ConsumerNode(i + 5);
+        ProducerNode pnode(i);// = new ProducerNode(i);
+        ConsumerNode cnode(i+5);// = new ConsumerNode(i + 5);
 
-        rnet->addNode(pnode);
-        rnet->addNode(cnode);
+        rnet->addNode(&pnode);
+        rnet->addNode(&cnode);
     }
+
+    int id = ((ProducerNode*)rnet->getNode(0))->getId();
+    std::cout << id << "\n";
 
     // // adding transport nodes to the system
     // std::vector<ResourceNode*> stnNodes;
@@ -138,7 +141,7 @@ int main(int argc, char* argv[])
     //Contains all the nodes in the network
     loop = 1;
     while(loop != 0) {
-        gameloop(*rnet);
+        gameloop(rnet);
         update(*rnet);
         printWorld(*rnet);
     }

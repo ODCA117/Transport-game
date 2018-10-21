@@ -2,19 +2,19 @@
 #include <iostream>
 
 /* -------------------------------------------------*/
-/* -------------ResourceNetwork------------------------*/
+/* -------------ResourceNetwork---------------------*/
 /* -------------------------------------------------*/
 ResourceNetwork::ResourceNetwork() {
-
+    nodes = new std::vector<ResourceNode*>();
 }
 ResourceNetwork::ResourceNetwork(std::vector<ResourceNode*> net){
-    nodes.insert(nodes.end(),net.begin(), net.end());
+    nodes->insert(nodes->end(),net.begin(), net.end());
 }
 void* ResourceNetwork::getNode(int id ){
-    for (unsigned int i = 0; i < nodes.size(); ++i)
+    for (unsigned int i = 0; i < nodes->size(); ++i)
     {
-        if(nodes[i]->getId() == id){
-            return nodes[i];
+        if(nodes->at(i)->getId() == id){
+            return nodes->at(i);
         }
     }
 
@@ -22,14 +22,15 @@ void* ResourceNetwork::getNode(int id ){
 }
 
 void ResourceNetwork::addNode(ResourceNode *node){
-    nodes.push_back(node);
+    nodes->push_back(node);
+
 }
 
 int ResourceNetwork::removeNode(int id) {
-    for (unsigned int i = 0; i < nodes.size(); ++i)
+    for (unsigned int i = 0; i < nodes->size(); ++i)
     {
-        if(nodes[i]->getId() == id){
-            nodes.erase(nodes.begin() + i);
+        if(nodes->at(i)->getId() == id){
+            nodes->erase(nodes->begin() + i);
             return 0;
         }
     }
@@ -37,7 +38,7 @@ int ResourceNetwork::removeNode(int id) {
 }
 
 int ResourceNetwork::size(){
-    return nodes.size();
+    return nodes->size();
 }
 
 std::string ResourceNode::toString() { return "NULL";}
@@ -46,19 +47,21 @@ std::string ResourceNode::toString() { return "NULL";}
 /* -------------ResourceNode------------------------*/
 /* -------------------------------------------------*/
 
-ResourceNode::ResourceNode(int id) : id(id){}
+ResourceNode::ResourceNode(int id) : id(id){
+    rnet = new ResourceNetwork();
+}
 
 bool ResourceNode::operator==(const ResourceNode rhs) {
     bool res = id == rhs.id;
     return res;
 }
 
-void ResourceNode::addNode(ResourceNode* node) {
-    rnet.addNode(node);
+void ResourceNode::addNode(ResourceNode *node) {
+    rnet->addNode(node);
 }
 
 ResourceNode ResourceNode::removeNode(int id) {
-    rnet.removeNode(id);
+    rnet->removeNode(id);
 }
 
 int ResourceNode::getId(){
@@ -73,6 +76,17 @@ ProducerNode::ProducerNode(int id) : ResourceNode(id) {
     maxProd = 100;
     currentProd = 0;
     demanded = 0;
+}
+
+void ProducerNode::updateDemanded() {
+    demanded = 0;
+    printf("size of rnet: %d \n", rnet->size());
+    for (int i = 0; i < rnet->size(); ++i)
+    {
+        printf("before demanded\n" );
+        printf("%x\n", rnet->getNode(id));
+        //demanded += ((ConsumerNode*)rnet.getNode(i))->getDemand();
+    }
 }
 
 /* ---------------Private Functions------------------------*/
@@ -94,24 +108,14 @@ void ProducerNode::updateCurrentProd() {
     }
 }
 
-void ProducerNode::updateDemanded() {
-    demanded = 0;
-    for (int i = 0; i < rnet.size(); ++i)
-    {
-        printf("before demanded\n" );
-        printf("%d\n", ((ConsumerNode*)rnet.getNode(i))->getId());
-        //demanded += ((ConsumerNode*)rnet.getNode(i))->getDemand();
-    }
-}
-
 /* ---------------Public Functions------------------------*/
 
 void ProducerNode::update(double deltaTime) {
     updateCurrentProd();
 
-    for(int i = 0; i < rnet.size(); i++) {
-        int added = (currentProd/rnet.size())*deltaTime;
-        ((ConsumerNode*)rnet.getNode(i))->addSupply(added);
+    for(int i = 0; i < rnet->size(); i++) {
+        int added = (currentProd/rnet->size())*deltaTime;
+        ((ConsumerNode*)rnet->getNode(i))->addSupply(added);
     }
 
 }
@@ -128,12 +132,12 @@ std::string ProducerNode::toString() {
         std::to_string(currentProd) + "\t" +
         std::to_string(demanded) + "\t";
 
-    if(rnet.size() == 0) {
+    if(rnet->size() == 0) {
         str += "Empty";
     }
-    for (int i = 0; i < rnet.size(); ++i)
+    for (int i = 0; i < rnet->size(); ++i)
     {
-        str += std::to_string(((ResourceNode*)rnet.getNode(id))->getId()) + " ";
+        str += std::to_string(((ResourceNode*)rnet->getNode(id))->getId()) + " ";
     }
 
     return str;

@@ -9,7 +9,7 @@ class ResourceNode;
 
  class ResourceNetwork {
  private:
-     std::vector<ResourceNode*> nodes;
+     std::vector<ResourceNode*> *nodes;
  public:
      ResourceNetwork();
      ResourceNetwork(std::vector<ResourceNode*> nodes);
@@ -21,7 +21,7 @@ class ResourceNode;
 
 class ResourceNode {
 protected:
-    ResourceNetwork rnet;
+    ResourceNetwork *rnet;
     int id;
 public:
     ResourceNode(int id);
