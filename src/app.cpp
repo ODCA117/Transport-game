@@ -5,13 +5,13 @@
 #include <memory>
 #include <vector>
 #include "ResourceNetwork.h"
+#include "TransportNetwork.h"
 
 /*
     what is finished?
     There is a structure for the nodes in the production network,
     It is possible to print the different values in the console
     The production algotithm is right now implemented
-
 
     TODO: Implement a refinery node which can refine resources if there is a supply
     TODO: Create a transport network which accepts a resource and an adress and sends the resource to that address
@@ -77,11 +77,12 @@ void gameloop(ResourceNetwork net) {
     if(args[0] == "add") {
         std::cout << "add " << args[1] << " to " << args[2] << "\n";
 
+/************* THIS IS WRONG HERE ***************************/        
         ((ResourceNode*)net.getNode(arg1))->addNode(((ResourceNode*)net.getNode(arg2)));
     }
     else if (args[0] == "rm") {
         std::cout << "remove " << std::to_string(arg1) << " from " << std::to_string(arg2) << "\n";
-        ((ResourceNode*)net.getNode(arg1))->removeNode(((ResourceNode*)net.getNode(arg2)));
+        ((ResourceNode* )net.getNode(arg1))->removeNode(arg2);
     }
     else {
         std::cout << "command not found retry" << "\n";
@@ -94,6 +95,7 @@ void update(ResourceNetwork net) {
     std::cout << "Update" << "\n";
     for (int i = net.size()/2; i < net.size(); ++i)
     {
+        std::cout << "consumer" << "\n";
         //Consumer Loop
         ((ConsumerNode*)net.getNode(i))->update(0.3);
 
@@ -101,32 +103,44 @@ void update(ResourceNetwork net) {
 
     for (int i = 0; i < net.size()/2; ++i)
     {
+        std::cout << "producer" << "\n";
         //Producer Loop
         ((ProducerNode*)net.getNode(i))->update(0.3);
 
     }
 
+    std::cout << "after update" << "\n";
+
 }
 
 int main(int argc, char* argv[])
 {
-    std::vector<ResourceNode*> nodes;
+    // adding Resource nodes to the system
+    ResourceNetwork *rnet = new ResourceNetwork();
     for (int i = 0; i < 5; ++i)
     {
         ProducerNode *pnode = new ProducerNode(i);
-        ConsumerNode *cnode = new ConsumerNode(i+5);
+        ConsumerNode *cnode = new ConsumerNode(i + 5);
 
-        nodes.push_back(pnode);
-        nodes.push_back(cnode);
+        rnet->addNode(pnode);
+        rnet->addNode(cnode);
     }
 
+    // // adding transport nodes to the system
+    // std::vector<ResourceNode*> stnNodes;
+    // stnNodes.push_back(nodes[0]);
+    // stnNodes.push_back(nodes[5]);
+    // Station *stn = new Station(0, stnNodes);
+    // std::vector<Station*> tnet;
+    // tnet.push_back(stn);
+
+
     //Contains all the nodes in the network
-    ResourceNetwork rnet(nodes);
     loop = 1;
     while(loop != 0) {
-        gameloop(rnet);
-        update(rnet);
-        printWorld(rnet);
+        gameloop(*rnet);
+        update(*rnet);
+        printWorld(*rnet);
     }
 
     return 0;

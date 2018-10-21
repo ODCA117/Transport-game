@@ -4,7 +4,12 @@
 /* -------------------------------------------------*/
 /* -------------ResourceNetwork------------------------*/
 /* -------------------------------------------------*/
-ResourceNetwork::ResourceNetwork(std::vector<ResourceNode*> nodes) : nodes(nodes) {}
+ResourceNetwork::ResourceNetwork() {
+
+}
+ResourceNetwork::ResourceNetwork(std::vector<ResourceNode*> net){
+    nodes.insert(nodes.end(),net.begin(), net.end());
+}
 void* ResourceNetwork::getNode(int id ){
     for (unsigned int i = 0; i < nodes.size(); ++i)
     {
@@ -15,11 +20,27 @@ void* ResourceNetwork::getNode(int id ){
 
     return NULL;
 }
-std::string ResourceNode::toString() { return "NULL";}
+
+void ResourceNetwork::addNode(ResourceNode *node){
+    nodes.push_back(node);
+}
+
+int ResourceNetwork::removeNode(int id) {
+    for (unsigned int i = 0; i < nodes.size(); ++i)
+    {
+        if(nodes[i]->getId() == id){
+            nodes.erase(nodes.begin() + i);
+            return 0;
+        }
+    }
+    return 1;
+}
 
 int ResourceNetwork::size(){
     return nodes.size();
 }
+
+std::string ResourceNode::toString() { return "NULL";}
 
 /* -------------------------------------------------*/
 /* -------------ResourceNode------------------------*/
@@ -33,16 +54,11 @@ bool ResourceNode::operator==(const ResourceNode rhs) {
 }
 
 void ResourceNode::addNode(ResourceNode* node) {
-    nodes.push_back(node);
+    rnet.addNode(node);
 }
 
-ResourceNode ResourceNode::removeNode(ResourceNode* node) {
-    for(unsigned int i = 0; i < nodes.size(); i++) {
-        if(*node == *nodes[i]) {
-            nodes.erase(nodes.begin() +i);
-        }
-    }
-    return *node;
+ResourceNode ResourceNode::removeNode(int id) {
+    rnet.removeNode(id);
 }
 
 int ResourceNode::getId(){
@@ -62,6 +78,7 @@ ProducerNode::ProducerNode(int id) : ResourceNode(id) {
 /* ---------------Private Functions------------------------*/
 
 void ProducerNode::updateCurrentProd() {
+    std::cout << std::to_string(maxProd) << "\n";
     updateDemanded();
     if(demanded >= maxProd) {
         currentProd = maxProd;
@@ -79,9 +96,11 @@ void ProducerNode::updateCurrentProd() {
 
 void ProducerNode::updateDemanded() {
     demanded = 0;
-    for (int i = 0; i < nodes.size(); ++i)
+    for (int i = 0; i < rnet.size(); ++i)
     {
-        demanded += ((ConsumerNode*)nodes[i])->getDemand();
+        printf("before demanded\n" );
+        printf("%d\n", ((ConsumerNode*)rnet.getNode(i))->getId());
+        //demanded += ((ConsumerNode*)rnet.getNode(i))->getDemand();
     }
 }
 
@@ -90,9 +109,9 @@ void ProducerNode::updateDemanded() {
 void ProducerNode::update(double deltaTime) {
     updateCurrentProd();
 
-    for(int i = 0; i < nodes.size(); i++) {
-        int added = (currentProd/nodes.size())*deltaTime;
-        ((ConsumerNode*)nodes[i])->addSupply(added);
+    for(int i = 0; i < rnet.size(); i++) {
+        int added = (currentProd/rnet.size())*deltaTime;
+        ((ConsumerNode*)rnet.getNode(i))->addSupply(added);
     }
 
 }
@@ -109,12 +128,12 @@ std::string ProducerNode::toString() {
         std::to_string(currentProd) + "\t" +
         std::to_string(demanded) + "\t";
 
-    if(nodes.size() == 0) {
+    if(rnet.size() == 0) {
         str += "Empty";
     }
-    for (int i = 0; i < nodes.size(); ++i)
+    for (int i = 0; i < rnet.size(); ++i)
     {
-        str += std::to_string((nodes[i]->getId())) + " ";
+        str += std::to_string(((ResourceNode*)rnet.getNode(id))->getId()) + " ";
     }
 
     return str;
@@ -163,14 +182,19 @@ void ConsumerNode::updateMaxCons(int val) {
 
 
 int ConsumerNode::getDemand(){
+    std::cout << "in getDemand" << std::to_string(maxCons) << "\n";
+    std::cout << "in getDemand: " << std::to_string(supply) << "\n";
 
     if(supply < maxCons) {
+        std::cout << "supply < maxCons" << "\n";
         return maxCons;
     }
     else if(supply > (5*maxCons)) {
+        std::cout << "supply > 5maxCons" << "\n";
         return 0;
     }
     else {
+        std::cout << "else" << "\n";
         return (maxCons/(double)supply) * 100;
     }
 }

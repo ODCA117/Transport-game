@@ -1,3 +1,6 @@
+#ifndef RESOURCE_NETWORK
+#define RESOURCE_NETWORK
+
 #include <vector>
 #include <string>
 #include <iomanip>
@@ -8,19 +11,22 @@ class ResourceNode;
  private:
      std::vector<ResourceNode*> nodes;
  public:
+     ResourceNetwork();
      ResourceNetwork(std::vector<ResourceNode*> nodes);
      void* getNode(int id); // void* that needs to be casted when used.
+     void addNode(ResourceNode* node);
+     int removeNode(int id);
      int size();
  };
 
 class ResourceNode {
 protected:
-    std::vector<ResourceNode*> nodes;
+    ResourceNetwork rnet;
     int id;
 public:
     ResourceNode(int id);
     void addNode(ResourceNode* node);
-    ResourceNode removeNode(ResourceNode* node);
+    ResourceNode removeNode(int id);
     bool operator==(const ResourceNode rhs);
     int getId();
     std::string toString();
@@ -51,9 +57,11 @@ public:
     void updateMaxCons(int val);
     int getDemand();
     void addSupply(int amount);
+
     std::string toString();
 };
 
+/*
 class RefineryNode : public ResourceNode {
 private:
     //producer attributes
@@ -72,3 +80,6 @@ public:
     void addSupply(int amount);
     std::string toString();
 };
+*/
+
+#endif
