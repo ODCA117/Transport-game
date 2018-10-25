@@ -10,10 +10,12 @@ class ResourceNode;
  class ResourceNetwork {
  private:
      std::vector<ResourceNode*> *nodes;
+     int findIndex(int id);
  public:
      ResourceNetwork();
      ResourceNetwork(std::vector<ResourceNode*> *nodes);
      void* getNode(int id); // void* that needs to be casted when used.
+     int getId(int i); 
      void addNode(ResourceNode* node);
      int removeNode(int id);
      int size();

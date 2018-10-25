@@ -13,7 +13,6 @@
     It is possible to print the different values in the console
     The production algotithm is right now implemented
 
-    TODO: remove the ResourceNetwork
     TODO: create translate function from id to index.
     TODO: Create a transport network which accepts a resource and an adress and sends the resource to that address
     TODO: Separate demand between different producer, consumer knows how many producers it has
@@ -79,8 +78,8 @@ void gameloop(ResourceNetwork *net) {
         std::cout << "add " << args[1] << " to " << args[2] << "\n";
 
 /************* THIS IS WRONG HERE ***************************/
-        ConsumerNode *node = (ConsumerNode*)net->getNode(arg2);
-        ((ProducerNode*)net->getNode(arg1))->addNode(node);
+        ConsumerNode *cNode = (ConsumerNode*)net->getNode(arg2);
+        ((ProducerNode*)net->getNode(arg1))->addNode(cNode);
     }
     else if (args[0] == "rm") {
         std::cout << "remove " << std::to_string(arg1) << " from " << std::to_string(arg2) << "\n";
@@ -110,7 +109,6 @@ void update(ResourceNetwork net) {
         ((ProducerNode*)net.getNode(i))->update(0.3);
 
     }
-
     std::cout << "after update" << "\n";
 
 }

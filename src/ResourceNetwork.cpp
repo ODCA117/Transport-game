@@ -4,6 +4,7 @@
 /* -------------------------------------------------*/
 /* -------------ResourceNetwork---------------------*/
 /* -------------------------------------------------*/
+
 ResourceNetwork::ResourceNetwork() {
     nodes = new std::vector<ResourceNode*>();
     nodes->reserve(20);
@@ -11,36 +12,41 @@ ResourceNetwork::ResourceNetwork() {
 ResourceNetwork::ResourceNetwork(std::vector<ResourceNode*> *net){
     nodes = net;
 }
-void* ResourceNetwork::getNode(int id ){
+
+/* -------------private---------------------*/
+int ResourceNetwork::findIndex(int id) {
     for (unsigned int i = 0; i < nodes->size(); ++i)
     {
         if(nodes->at(i)->getId() == id){
-            return nodes->at(i);
+            return i;
         }
     }
+    return -1;
+}
 
+/* -------------public---------------------*/
+
+void* ResourceNetwork::getNode(int id ){
+    int i = findIndex(id);
+    if(i >= 0) {
+        return nodes->at(i);
+    }
     return NULL;
+}
+
+int ResourceNetwork::getId(int i) {
+    return nodes->at(i)->getId();
 }
 
 void ResourceNetwork::addNode(ResourceNode *node){
     nodes->push_back(node);
-
-    for(int i = 0; i < nodes->size(); i++) {
-        std::cout << "Added in network id: " << nodes->at(i)->getId() << "\n";
-    }
-
-    std::cout << "\n";
-
-
 }
 
 int ResourceNetwork::removeNode(int id) {
-    for (unsigned int i = 0; i < nodes->size(); ++i)
-    {
-        if(nodes->at(i)->getId() == id){
-            nodes->erase(nodes->begin() + i);
-            return 0;
-        }
+    int i = findIndex(id);
+    if(i >= 0) {
+        nodes->erase(nodes->begin() + i);
+        return 0;
     }
     return 1;
 }
@@ -66,7 +72,6 @@ bool ResourceNode::operator==(const ResourceNode rhs) {
 
 void ResourceNode::addNode(ResourceNode *node) {
     rnet->addNode(node);
-    int id = node->getId();
 }
 
 ResourceNode ResourceNode::removeNode(int id) {
@@ -89,15 +94,16 @@ ProducerNode::ProducerNode(int id) : ResourceNode(id) {
 
 void ProducerNode::updateDemanded() {
     demanded = 0;
-    printf("size of rnet: %d \n", rnet->size());
 
-
+    for(int i = 0; i < rnet->size(); i++) {
+        int id = rnet->getId(i);
+        demanded += ((ConsumerNode*)rnet->getNode(id))->getDemand();
+    }
 }
 
 /* ---------------Private Functions------------------------*/
 
 void ProducerNode::updateCurrentProd() {
-    std::cout << std::to_string(maxProd) << "\n";
     updateDemanded();
     if(demanded >= maxProd) {
         currentProd = maxProd;
@@ -118,9 +124,11 @@ void ProducerNode::updateCurrentProd() {
 void ProducerNode::update(double deltaTime) {
     updateCurrentProd();
 
+    int id;
     for(int i = 0; i < rnet->size(); i++) {
+        id = rnet->getId(i);
         int added = (currentProd/rnet->size())*deltaTime;
-        ((ConsumerNode*)rnet->getNode(i))->addSupply(added);//id not index
+        ((ConsumerNode*)rnet->getNode(id))->addSupply(added);//id not index
     }
 
 }
@@ -140,8 +148,10 @@ std::string ProducerNode::toString() {
     if(rnet->size() == 0) {
         str += "Empty";
     }
+    int id;
     for (int i = 0; i < rnet->size(); ++i)
     {
+        id = rnet->getId(i);
         str += std::to_string(((ResourceNode*)rnet->getNode(id))->getId()) + " ";
     }
 
@@ -188,22 +198,15 @@ void ConsumerNode::updateMaxCons(int val) {
     maxCons = val;
 }
 
-
-
 int ConsumerNode::getDemand(){
-    std::cout << "in getDemand" << std::to_string(maxCons) << "\n";
-    std::cout << "in getDemand: " << std::to_string(supply) << "\n";
 
     if(supply < maxCons) {
-        std::cout << "supply < maxCons" << "\n";
         return maxCons;
     }
     else if(supply > (5*maxCons)) {
-        std::cout << "supply > 5maxCons" << "\n";
         return 0;
     }
     else {
-        std::cout << "else" << "\n";
         return (maxCons/(double)supply) * 100;
     }
 }
@@ -222,6 +225,8 @@ std::string ConsumerNode::toString() {
 
     return str;
 }
+
+
 
 
 
