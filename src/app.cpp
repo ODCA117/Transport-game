@@ -13,13 +13,15 @@
     It is possible to print the different values in the console
     The production algotithm is right now implemented
 
-    TODO: create translate function from id to index.
-    TODO: Create a transport network which accepts a resource and an adress and sends the resource to that address
     TODO: Separate demand between different producer, consumer knows how many producers it has
+    TODO: Create a transport network which accepts a resource and an adress and sends the resource to that address
+    TODO: create a interface to use to make it all easier to use
+    TODO: create some way to different consumers, producers.
     TODO: Use multiple resources
     TODO: Add different types of resources.
     TODO: Create a better printing methods
     TODO: Implement a refinery node which can refine resources if there is a supply
+    TODO: loop may make two conuser use to more than produced, one at 51 and the other at 50
  */
 
 int loop;
@@ -76,10 +78,12 @@ void gameloop(ResourceNetwork *net) {
     int arg2 = std::stoi(args[2]);
     if(args[0] == "add") {
         std::cout << "add " << args[1] << " to " << args[2] << "\n";
-
-/************* THIS IS WRONG HERE ***************************/
+        //get consumerNode and ProducerNode
         ConsumerNode *cNode = (ConsumerNode*)net->getNode(arg2);
-        ((ProducerNode*)net->getNode(arg1))->addNode(cNode);
+        ProducerNode *pNode = (ProducerNode*)net->getNode(arg1);
+        //add each node to each other
+        pNode->addNode(cNode);
+        cNode->addNode(pNode);
     }
     else if (args[0] == "rm") {
         std::cout << "remove " << std::to_string(arg1) << " from " << std::to_string(arg2) << "\n";
@@ -96,20 +100,16 @@ void update(ResourceNetwork net) {
     std::cout << "Update" << "\n";
     for (int i = net.size()/2; i < net.size(); ++i)
     {
-        std::cout << "consumer" << "\n";
-        //Consumer Loop
         ((ConsumerNode*)net.getNode(i))->update(0.3);
 
     }
 
     for (int i = 0; i < net.size()/2; ++i)
     {
-        std::cout << "producer" << "\n";
         //Producer Loop
         ((ProducerNode*)net.getNode(i))->update(0.3);
 
     }
-    std::cout << "after update" << "\n";
 
 }
 

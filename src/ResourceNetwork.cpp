@@ -201,13 +201,13 @@ void ConsumerNode::updateMaxCons(int val) {
 int ConsumerNode::getDemand(){
 
     if(supply < maxCons) {
-        return maxCons;
+        return maxCons / rnet->size();
     }
     else if(supply > (5*maxCons)) {
         return 0;
     }
     else {
-        return (maxCons/(double)supply) * 100;
+        return ((maxCons/(double)supply) * 100)/rnet->size();
     }
 }
 
