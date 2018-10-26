@@ -31,21 +31,32 @@ void NodeInterface::removeNode(int node1, int node2) {
     n1->removeNode(node2);
 }
 
-void NodeInterface::update() {
+void NodeInterface::update(double deltaTime) {
+
     std::cout << "Update" << "\n";
     for (int i = net.size()/2; i < net.size(); ++i)
     {
-        ((ConsumerNode*)net.getNode(i))->update(0.3);
+        ((ConsumerNode*)net.getNode(i))->update(deltaTime);
     }
 
     for (int i = 0; i < net.size()/2; ++i)
     {
-        //Producer Loop
-        ((ProducerNode*)net.getNode(i))->update(0.3);
-
+        ((ProducerNode*)net.getNode(i))->update(deltaTime);
     }
 }
 
 void NodeInterface::print() {
+    std::cout << net.size() << "\n";
+    std::cout << "Name\t maxProd \t curProd \t demanded \t Demanders" << "\n";
+    for (int i = 0; i < net.size()/2; ++i)
+    {
+        std::cout << ((ProducerNode*)net.getNode(i))->toString() << "\n";
+    }
 
+    std::cout << "\n -------------- \n" << "\n";
+    std::cout << "Name \t maxCons \t curCons \t supply" << "\n";
+    for (int i = net.size()/2; i < net.size(); ++i)
+    {
+        std::cout << ((ConsumerNode*)net.getNode(i))->toString() << "\n";
+    }
 }

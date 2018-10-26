@@ -4,7 +4,7 @@
 #include <random>
 #include <memory>
 #include <vector>
-#include "ResourceNetwork.h"
+#include "NodeInterface.h"
 #include "TransportNetwork.h"
 
 /*
@@ -13,7 +13,6 @@
     It is possible to print the different values in the console
     The production algotithm is right now implemented
 
-    TODO: Separate demand between different producer, consumer knows how many producers it has
     TODO: Create a transport network which accepts a resource and an adress and sends the resource to that address
     TODO: create a interface to use to make it all easier to use
     TODO: create some way to different consumers, producers.
@@ -23,6 +22,8 @@
     TODO: Implement a refinery node which can refine resources if there is a supply
     TODO: loop may make two conuser use to more than produced, one at 51 and the other at 50
  */
+
+#define DELTA_TIME 0.3
 
 int loop;
 
@@ -43,7 +44,7 @@ void printWorld(ResourceNetwork net) {
 }
 
 //simulation for the program in current state
-void gameloop(ResourceNetwork *net) {
+void gameloop(NodeInterface* ni) {
 
     //prompt user for command
     std::string command;
@@ -55,6 +56,10 @@ void gameloop(ResourceNetwork *net) {
     std::vector<std::string> args(
         (std::istream_iterator<std::string>(iss)),
          std::istream_iterator<std::string>());
+
+    // check if no argument is added before
+
+
 
     if (args[0] == "loop") {
         std::cout << "loop one time" << "\n";
@@ -78,43 +83,24 @@ void gameloop(ResourceNetwork *net) {
     int arg2 = std::stoi(args[2]);
     if(args[0] == "add") {
         std::cout << "add " << args[1] << " to " << args[2] << "\n";
-        //get consumerNode and ProducerNode
-        ConsumerNode *cNode = (ConsumerNode*)net->getNode(arg2);
-        ProducerNode *pNode = (ProducerNode*)net->getNode(arg1);
-        //add each node to each other
-        pNode->addNode(cNode);
-        cNode->addNode(pNode);
+        ni->addNode(arg1, arg2);
     }
     else if (args[0] == "rm") {
-        std::cout << "remove " << std::to_string(arg1) << " from " << std::to_string(arg2) << "\n";
-        ((ResourceNode* )net->getNode(arg1))->removeNode(arg2);
+        std::cout << "remove " << args[1] << " to " << args[2] << "\n";
+        ni->removeNode(arg1, arg2);
     }
     else {
         std::cout << "command not found retry" << "\n";
     }
 }
 
-void update(ResourceNetwork net) {
-
-    //first loop through all Consumers then all the producers
-    std::cout << "Update" << "\n";
-    for (int i = net.size()/2; i < net.size(); ++i)
-    {
-        ((ConsumerNode*)net.getNode(i))->update(0.3);
-
-    }
-
-    for (int i = 0; i < net.size()/2; ++i)
-    {
-        //Producer Loop
-        ((ProducerNode*)net.getNode(i))->update(0.3);
-
-    }
-
+void update(NodeInterface* ni) {
+    ni->update(DELTA_TIME);
 }
 
 int main(int argc, char* argv[])
 {
+    /* -----------------old soultion--------------
     // adding Resource nodes to the system
     ResourceNetwork *rnet = new ResourceNetwork();
     for (int i = 0; i < 5; ++i)
@@ -125,25 +111,25 @@ int main(int argc, char* argv[])
         rnet->addNode(pnode);
         rnet->addNode(cnode);
     }
+    */
 
-    int id = ((ProducerNode*)rnet->getNode(0))->getId();
-    std::cout << id << "\n";
+    NodeInterface *ni = new NodeInterface();
 
-    // // adding transport nodes to the system
-    // std::vector<ResourceNode*> stnNodes;
-    // stnNodes.push_back(nodes[0]);
-    // stnNodes.push_back(nodes[5]);
-    // Station *stn = new Station(0, stnNodes);
-    // std::vector<Station*> tnet;
-    // tnet.push_back(stn);
-
+    for(int i = 0; i < 10; i++) {
+        if(i < 5) {
+            ni->createProducer(i);
+        }
+        else {
+            ni->createConsumer(i);
+        }
+    }
 
     //Contains all the nodes in the network
     loop = 1;
     while(loop != 0) {
-        gameloop(rnet);
-        update(*rnet);
-        printWorld(*rnet);
+        gameloop(ni);
+        update(ni);
+        ni->print();
     }
 
     return 0;

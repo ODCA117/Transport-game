@@ -13,7 +13,8 @@ public:
     void createConsumer(int id);
     void addNode(int node1, int node2);
     void removeNode(int node1, int node2);
-    void update();
+    //update the values in loop
+    void update(double deltaTime);
     void print();
 };
 #endif
