@@ -1,0 +1,30 @@
+#ifndef NODE_INTERFACE
+#define NODE_INTERFACE
+
+#include "ResourceNetwork.h"
+#include "TransportNetwork.h"
+
+//class to make the usage simpler and more inuative
+class NetworkInterface {
+private:
+    ResourceNetwork net;
+    std::vector<Station*> stations;
+public:
+    NetworkInterface();
+    void createProducer(int id);
+    void createConsumer(int id);
+    void createStation(int id);
+
+    void connectNodes(int node1, int node2);
+    void disconnectNodes(int node1, int node2);
+
+    void addNodeStation(int nodeID, int stationID);
+    void removeNodeStation(int nodeID, int stationID);
+
+    void connectStations(int station1, int station2);
+    void disconnectStations(int station1, int station2);
+    //update the values in loop
+    void update(double deltaTime);
+    void print();
+};
+#endif

@@ -4,8 +4,7 @@
 #include <random>
 #include <memory>
 #include <vector>
-#include "NodeInterface.h"
-#include "TransportNetwork.h"
+#include "NetworkInterface.h"
 
 /*
     what is finished?

@@ -8,30 +8,39 @@
 
 class Station;
 
-
 class TransportNetwork {
 private:
-    std::vector<Station*> stations;
+    std::vector<Station*> *stations;
+    int findIndex(int id);
 public:
-    TransportNetwork ();
+    TransportNetwork();
+    TransportNetwork(std::vector<Station*> *stations);
+    void* getStation(int id);
+    int getId(int i);
+    void addStation(Station* station);
+    void removeStation(int id);
+    int size();
+    void listStations();
 };
 
 class Station {
 private:
     int id;
     ResourceNetwork rnet;
-    std::vector<Station*> connectedStations;
+    std::vector<Station*> stations;
 
 public:
-    Station ();
+    Station (int id);
     Station (int id, ResourceNetwork nodes);
-    void addStation();
-    void removeStations(int id);
-    void addNodes();
-    void removeNodes(int id);
+    bool operator==(const Station rhs);
+    int getId();
+    void addStation(Station *station);
+    void removeStation(int id);
+    void addNode(ResourceNode* node);
+    void removeNode(int id);
     void listStations();
     void listNodes();
-
+    std::string toString();
 };
 
 #endif

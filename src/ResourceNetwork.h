@@ -27,6 +27,8 @@ class ResourceNode;
      int removeNode(int id);
      //returns the size of list
      int size();
+     //list all list
+     void listNodes();
  };
 
 class ResourceNode {

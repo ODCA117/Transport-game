@@ -55,7 +55,13 @@ int ResourceNetwork::size(){
     return nodes->size();
 }
 
-std::string ResourceNode::toString() { return "NULL";}
+void ResourceNetwork::listNodes() {
+    for(int i = 0; i < nodes->size(); i++) {
+        std::cout << "resource node id:" << nodes->at(i)->getId() << "\n";
+    }
+}
+
+//std::string ResourceNode::toString() { return "NULL";}
 
 /* -------------------------------------------------*/
 /* -------------ResourceNode------------------------*/

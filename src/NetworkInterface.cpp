@@ -1,21 +1,21 @@
 #include <iostream>
-#include "NodeInterface.h"
+#include "NetworkInterface.h"
 
-NodeInterface::NodeInterface(){
+NetworkInterface::NetworkInterface(){
 
 }
 
-void NodeInterface::createProducer(int id) {
+void NetworkInterface::createProducer(int id) {
     ProducerNode *node = new ProducerNode(id);
     net.addNode(node);
 }
 
-void NodeInterface::createConsumer(int id) {
+void NetworkInterface::createConsumer(int id) {
     ConsumerNode *node = new ConsumerNode(id);
     net.addNode(node);
 }
 
-void NodeInterface::addNode(int node1, int node2) {
+void NetworkInterface::connectNodes(int node1, int node2) {
     ResourceNode *n1 = (ResourceNode*)net.getNode(node1);
     ResourceNode *n2 = (ResourceNode*)net.getNode(node2);
 
@@ -23,7 +23,7 @@ void NodeInterface::addNode(int node1, int node2) {
     n1->addNode(n2);
 }
 
-void NodeInterface::removeNode(int node1, int node2) {
+void NetworkInterface::disconnectNodes(int node1, int node2) {
     ResourceNode *n1 = (ResourceNode*)net.getNode(node1);
     ResourceNode *n2 = (ResourceNode*)net.getNode(node2);
 
@@ -31,7 +31,17 @@ void NodeInterface::removeNode(int node1, int node2) {
     n1->removeNode(node2);
 }
 
-void NodeInterface::update(double deltaTime) {
+void NetworkInterface::addNodeStation(int nodeID, int stationID) {
+
+}
+
+void NetworkInterface::removeNodeStation(int nodeID, int stationID) {}
+
+void connectStations(int station1, int station2){}
+
+void disconnectStations(int station1, int station2){}
+
+void NetworkInterface::update(double deltaTime) {
 
     std::cout << "Update" << "\n";
     for (int i = net.size()/2; i < net.size(); ++i)
@@ -45,7 +55,7 @@ void NodeInterface::update(double deltaTime) {
     }
 }
 
-void NodeInterface::print() {
+void NetworkInterface::print() {
     std::cout << net.size() << "\n";
     std::cout << "Name\t maxProd \t curProd \t demanded \t Demanders" << "\n";
     for (int i = 0; i < net.size()/2; ++i)
