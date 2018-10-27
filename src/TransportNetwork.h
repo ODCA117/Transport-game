@@ -15,7 +15,7 @@ private:
 public:
     TransportNetwork();
     TransportNetwork(std::vector<Station*> *stations);
-    void* getStation(int id);
+    Station* getStation(int id);
     int getId(int i);
     void addStation(Station* station);
     void removeStation(int id);

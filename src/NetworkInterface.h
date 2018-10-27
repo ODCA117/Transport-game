@@ -7,8 +7,8 @@
 //class to make the usage simpler and more inuative
 class NetworkInterface {
 private:
-    ResourceNetwork net;
-    std::vector<Station*> stations;
+    ResourceNetwork rnet;
+    TransportNetwork tnet;
 public:
     NetworkInterface();
     void createProducer(int id);

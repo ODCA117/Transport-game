@@ -20,7 +20,7 @@ int TransportNetwork::findIndex(int id) {
     return -1;
 }
 
-void* TransportNetwork::getStation(int id) {
+Station* TransportNetwork::getStation(int id) {
     int i = findIndex(id);
     if(i >= 0) {
         return stations->at(i);
