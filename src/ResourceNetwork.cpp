@@ -55,10 +55,14 @@ int ResourceNetwork::size(){
     return nodes->size();
 }
 
-void ResourceNetwork::listNodes() {
+std::string ResourceNetwork::toString() {
+    std::string str;
+
     for(int i = 0; i < nodes->size(); i++) {
-        std::cout << "resource node id:" << nodes->at(i)->getId() << "\n";
+        str += "node" + nodes->at(i)->getId();
+        //std::cout << "resource node id:" << nodes->at(i)->getId() << "\n";
     }
+    return str;
 }
 
 //std::string ResourceNode::toString() { return "NULL";}
@@ -67,7 +71,7 @@ void ResourceNetwork::listNodes() {
 /* -------------ResourceNode------------------------*/
 /* -------------------------------------------------*/
 
-ResourceNode::ResourceNode(int id) : id(id){
+ResourceNode::ResourceNode(int id, int type) : id(id), type(type){
     rnet = new ResourceNetwork();
 }
 
@@ -92,7 +96,7 @@ int ResourceNode::getId(){
 /* |************ProducerNode***********************|*/
 /* |-----------------------------------------------|*/
 
-ProducerNode::ProducerNode(int id) : ResourceNode(id) {
+ProducerNode::ProducerNode(int id) : ResourceNode(id, 1) {
     maxProd = 100;
     currentProd = 0;
     demanded = 0;
@@ -134,7 +138,7 @@ void ProducerNode::update(double deltaTime) {
     for(int i = 0; i < rnet->size(); i++) {
         id = rnet->getId(i);
         int added = (currentProd/rnet->size())*deltaTime;
-        ((ConsumerNode*)rnet->getNode(id))->addSupply(added);//id not index
+        ((ConsumerNode*)rnet->getNode(id))->addSupply(added);
     }
 
 }
@@ -168,7 +172,7 @@ std::string ProducerNode::toString() {
 /* -------------------------------------------------*/
 /* -------------ConsumerNode------------------------*/
 /* -------------------------------------------------*/
-ConsumerNode::ConsumerNode(int id) : ResourceNode(id) {
+ConsumerNode::ConsumerNode(int id) : ResourceNode(id, 2) {
     maxCons = 100;
     currentCons = 0;
     supply = 0;

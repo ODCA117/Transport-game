@@ -28,17 +28,17 @@ class ResourceNode;
      //returns the size of list
      int size();
      //list all list
-     void listNodes();
+     std::string toString();
  };
 
 class ResourceNode {
 protected:
     //a local network connected with the node
     ResourceNetwork *rnet;
-    int id;
+    int id, type;
 public:
     //creates a node with id id
-    ResourceNode(int id);
+    ResourceNode(int id, int type);
     //adds a node to the local network of nodes for this node
     void addNode(ResourceNode* node);
     //removes a node from the local network
@@ -47,6 +47,9 @@ public:
     bool operator==(const ResourceNode rhs);
     //returns id of this node
     int getId();
+    //returns 1 if Producer and 2 if Consumer
+    int getType(int id);
+
     std::string toString();
 };
 

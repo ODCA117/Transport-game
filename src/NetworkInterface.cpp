@@ -40,6 +40,8 @@ void NetworkInterface::addNodeStation(int nodeID, int stationID) {
     ResourceNode *node = (ResourceNode*)rnet.getNode(nodeID);
     Station *station = tnet.getStation(stationID);
     station->addNode(node);
+
+    //connect station to the other stations
 }
 
 void NetworkInterface::removeNodeStation(int nodeID, int stationID) {
@@ -53,6 +55,9 @@ void NetworkInterface::connectStations(int station1, int station2) {
 
     s1->addStation(s2);
     s2->addStation(s1);
+    //connect nodes between these nodes
+    //1 get a list of all the nodes within the other station
+    //connect them with eachother
 }
 
 void NetworkInterface::disconnectStations(int station1, int station2 ) {
@@ -63,13 +68,17 @@ void NetworkInterface::disconnectStations(int station1, int station2 ) {
     s2->removeStation(station1);
 }
 
+std::vector<int> getConnectedNodes(int id) {
+    return std::vector<int>();
+}
+
 void NetworkInterface::update(double deltaTime) {
 
     std::cout << "Update" << "\n";
     for (int i = rnet.size()/2; i < rnet.size(); ++i)
     {
         ((ConsumerNode*)rnet.getNode(i))->update(deltaTime);
-    }
+}
 
     for (int i = 0; i < rnet.size()/2; ++i)
     {

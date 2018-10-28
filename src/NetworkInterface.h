@@ -23,6 +23,8 @@ public:
 
     void connectStations(int station1, int station2);
     void disconnectStations(int station1, int station2);
+
+    std::vector<int> getConnectedNodes(int id);
     //update the values in loop
     void update(double deltaTime);
     void print();

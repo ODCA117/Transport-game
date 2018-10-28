@@ -46,7 +46,7 @@ int TransportNetwork::size() {
     return stations->size();
 }
 
-void TransportNetwork::listStations(){
+void TransportNetwork::printStations(){
     for (int i = 0; i < stations->size(); ++i)
     {
         std::cout << "Station" << stations->at(i)->getId() << "\n";
@@ -89,15 +89,16 @@ void Station::removeNode(int id) {
     rnet.removeNode(id);
 }
 
-void Station::listStations() {
+void Station::printStations() {
     for (int i = 0; i < stations.size(); ++i)
     {
         std::cout << "Station:" << stations[i]->id << "\n";
     }
 }
 
-void Station::listNodes() {
-    rnet.listNodes();
+void Station::printNodes() {
+    //rnet.printNodes();
+    std::cout << "NULL" << "\n";
 }
 
 std::string Station::toString() {

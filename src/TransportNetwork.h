@@ -20,7 +20,7 @@ public:
     void addStation(Station* station);
     void removeStation(int id);
     int size();
-    void listStations();
+    void printStations();
 };
 
 class Station {
@@ -38,8 +38,8 @@ public:
     void removeStation(int id);
     void addNode(ResourceNode* node);
     void removeNode(int id);
-    void listStations();
-    void listNodes();
+    void printStations();
+    void printNodes();
     std::string toString();
 };
 
