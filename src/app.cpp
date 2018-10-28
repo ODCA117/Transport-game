@@ -43,7 +43,7 @@ void printWorld(ResourceNetwork net) {
 }
 
 //simulation for the program in current state
-void gameloop(NodeInterface* ni) {
+void gameloop(NetworkInterface* ni) {
 
     //prompt user for command
     std::string command;
@@ -80,20 +80,36 @@ void gameloop(NodeInterface* ni) {
     //arguments after
     int arg1 = std::stoi(args[1]);
     int arg2 = std::stoi(args[2]);
-    if(args[0] == "add") {
-        std::cout << "add " << args[1] << " to " << args[2] << "\n";
-        ni->addNode(arg1, arg2);
+    if(args[0] == "cn") { //should not be used here. will be called when creating station
+        std::cout << "cn " << args[1] << " to " << args[2] << "\n";
+        ni->connectNodes(arg1, arg2);
     }
-    else if (args[0] == "rm") {
-        std::cout << "remove " << args[1] << " to " << args[2] << "\n";
-        ni->removeNode(arg1, arg2);
+    else if (args[0] == "rn") { //should not be used here. will be called when creating station
+        std::cout << "disconnect Nodes " << args[1] << " and " << args[2] << "\n";
+        ni->disconnectNodes(arg1, arg2);
+    }
+    else if (args[0] == "cs") {
+        std::cout << "connect stations " << args[1] << " to " << args[2] << "\n";
+        ni->connectStations(arg1, arg2);
+    }
+    else if (args[0] == "rs" ) {
+        std::cout << "disconnect stations " << args[1] << " and " << args[2] << "\n";
+        ni->disconnectStations(arg1, arg2);
+    }
+    else if (args[0] == "addNode") {
+        std::cout << "add node " << args[1] << " to station " << args[2] << "\n";
+        ni->addNodeStation(arg1, arg2);
+    }
+    else if (args[0] == "removeNode") {
+        std::cout << "remove node " << args[1] << " from station " << args[2] << "\n";
+        ni->removeNodeStation(arg1, arg2);
     }
     else {
         std::cout << "command not found retry" << "\n";
     }
 }
 
-void update(NodeInterface* ni) {
+void update(NetworkInterface* ni) {
     ni->update(DELTA_TIME);
 }
 
@@ -112,14 +128,17 @@ int main(int argc, char* argv[])
     }
     */
 
-    NodeInterface *ni = new NodeInterface();
+    NetworkInterface *ni = new NetworkInterface();
 
-    for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < 15; i++) {
         if(i < 5) {
             ni->createProducer(i);
         }
-        else {
+        else if (i < 10) {
             ni->createConsumer(i);
+        }
+        else {
+            ni->createStation(i);
         }
     }
 

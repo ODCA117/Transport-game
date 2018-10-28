@@ -15,6 +15,11 @@ void NetworkInterface::createConsumer(int id) {
     rnet.addNode(node);
 }
 
+void NetworkInterface::createStation(int id) {
+    Station *station = new Station(id);
+    tnet.addStation(station);
+}
+
 void NetworkInterface::connectNodes(int node1, int node2) {
     ResourceNode *n1 = (ResourceNode*)rnet.getNode(node1);
     ResourceNode *n2 = (ResourceNode*)rnet.getNode(node2);
@@ -73,7 +78,15 @@ void NetworkInterface::update(double deltaTime) {
 }
 
 void NetworkInterface::print() {
-    std::cout << rnet.size() << "\n";
+    std::cout << "\n -------------- \n" << "\n";
+    std::cout <<"station:id stations nodes" << "\n";
+    for (int i = 10; i < 10 + tnet.size(); ++i)
+    {
+        std::cout << tnet.getStation(i)->toString() << "\n";
+    }
+
+    std::cout << "\n -------------- \n" << "\n";
+
     std::cout << "Name\t maxProd \t curProd \t demanded \t Demanders" << "\n";
     for (int i = 0; i < rnet.size()/2; ++i)
     {

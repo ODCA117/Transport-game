@@ -65,6 +65,10 @@ bool Station::operator==(Station rhs) {
     return res;
 }
 
+int Station::getId() {
+    return id;
+}
+
 void Station::addStation(Station *station) {
     stations.push_back(station);
 }
@@ -94,4 +98,12 @@ void Station::listStations() {
 
 void Station::listNodes() {
     rnet.listNodes();
+}
+
+std::string Station::toString() {
+    std::string str = "";
+    str += "Station" + std::to_string(id) + "\t";
+    str += std::to_string(stations.size()) + "\t";
+    str += std::to_string(rnet.size());
+    return str;
 }
