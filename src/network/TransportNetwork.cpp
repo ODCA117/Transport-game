@@ -25,6 +25,8 @@ Station* TransportNetwork::getStation(int id) {
     if(i >= 0) {
         return stations->at(i);
     }
+
+    return NULL;
 }
 
 int TransportNetwork::getId(int i) {
@@ -47,7 +49,7 @@ int TransportNetwork::size() {
 }
 
 void TransportNetwork::printStations(){
-    for (int i = 0; i < stations->size(); ++i)
+    for (unsigned int i = 0; i < stations->size(); ++i)
     {
         std::cout << "Station" << stations->at(i)->getId() << "\n";
     }
@@ -74,7 +76,7 @@ void Station::addStation(Station *station) {
 }
 
 void Station::removeStation(int id) {
-    for(int i = 0; i < stations.size(); i++) {
+    for( unsigned int i = 0; i < stations.size(); i++) {
         if(stations[i]->id == id) {
             stations.erase(stations.begin() + i);
         }
@@ -89,8 +91,20 @@ void Station::removeNode(int id) {
     rnet.removeNode(id);
 }
 
+std::vector<int> Station::getNodes() {
+    return rnet.getNodes();
+}
+
+std::vector<int> Station::getStations() {
+    std::vector<int> s;
+    for(unsigned int i = 0; i < stations.size(); i++) {
+        s.push_back(stations.at(i)->getId());
+    }
+    return s;
+}
+
 void Station::printStations() {
-    for (int i = 0; i < stations.size(); ++i)
+    for (unsigned int i = 0; i < stations.size(); ++i)
     {
         std::cout << "Station:" << stations[i]->id << "\n";
     }

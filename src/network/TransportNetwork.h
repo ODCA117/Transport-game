@@ -38,6 +38,9 @@ public:
     void removeStation(int id);
     void addNode(ResourceNode* node);
     void removeNode(int id);
+    int getNode(int id);
+    std::vector<int> getNodes();
+    std::vector<int> getStations();
     void printStations();
     void printNodes();
     std::string toString();

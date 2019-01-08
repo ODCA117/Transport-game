@@ -25,6 +25,8 @@ class ResourceNode;
      void addNode(ResourceNode* node);
      //remove node with id id
      int removeNode(int id);
+     //returns all node ids in this network
+     std::vector<int> getNodes();
      //returns the size of list
      int size();
      //list all list
@@ -42,7 +44,7 @@ public:
     //adds a node to the local network of nodes for this node
     void addNode(ResourceNode* node);
     //removes a node from the local network
-    ResourceNode removeNode(int id);
+    void removeNode(int id);
     //opeator to fix how equal works on nodes
     bool operator==(const ResourceNode rhs);
     //returns id of this node

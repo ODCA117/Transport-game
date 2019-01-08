@@ -20,6 +20,7 @@
     TODO: Create a better printing methods
     TODO: Implement a refinery node which can refine resources if there is a supply
     TODO: loop may make two conuser use to more than produced, one at 51 and the other at 50
+    TODO: make add and remove boolean functions
  */
 
 #define DELTA_TIME 0.3
@@ -82,11 +83,11 @@ void gameloop(NetworkInterface* ni) {
     int arg2 = std::stoi(args[2]);
     if(args[0] == "cn") { //should not be used here. will be called when creating station
         std::cout << "cn " << args[1] << " to " << args[2] << "\n";
-        ni->connectNodes(arg1, arg2);
+        //ni->connectNodes(arg1, arg2);
     }
     else if (args[0] == "rn") { //should not be used here. will be called when creating station
         std::cout << "disconnect Nodes " << args[1] << " and " << args[2] << "\n";
-        ni->disconnectNodes(arg1, arg2);
+        //ni->disconnectNodes(arg1, arg2);
     }
     else if (args[0] == "cs") {
         std::cout << "connect stations " << args[1] << " to " << args[2] << "\n";
@@ -98,11 +99,11 @@ void gameloop(NetworkInterface* ni) {
     }
     else if (args[0] == "addNode") {
         std::cout << "add node " << args[1] << " to station " << args[2] << "\n";
-        ni->addNodeStation(arg1, arg2);
+        ni->addNodeToStation(arg1, arg2);
     }
     else if (args[0] == "removeNode") {
         std::cout << "remove node " << args[1] << " from station " << args[2] << "\n";
-        ni->removeNodeStation(arg1, arg2);
+        ni->removeNodeForStation(arg1, arg2);
     }
     else {
         std::cout << "command not found retry" << "\n";

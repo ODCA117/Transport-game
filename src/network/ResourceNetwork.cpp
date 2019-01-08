@@ -26,11 +26,13 @@ int ResourceNetwork::findIndex(int id) {
 
 /* -------------public---------------------*/
 
+//bad return when failing
 void* ResourceNetwork::getNode(int id ){
     int i = findIndex(id);
     if(i >= 0) {
         return nodes->at(i);
     }
+
     return NULL;
 }
 
@@ -39,7 +41,12 @@ int ResourceNetwork::getId(int i) {
 }
 
 void ResourceNetwork::addNode(ResourceNode *node){
-    nodes->push_back(node);
+    int i = findIndex(node->getId());
+
+    if(i < 0) {
+        nodes->push_back(node);
+
+    }
 }
 
 int ResourceNetwork::removeNode(int id) {
@@ -51,6 +58,16 @@ int ResourceNetwork::removeNode(int id) {
     return 1;
 }
 
+std::vector<int> ResourceNetwork::getNodes() {
+    std::vector<int> ids;
+
+    for(unsigned int i = 0; i < nodes->size(); i++) {
+        ids.push_back(getId(i));
+    }
+
+    return ids;
+}
+
 int ResourceNetwork::size(){
     return nodes->size();
 }
@@ -58,8 +75,8 @@ int ResourceNetwork::size(){
 std::string ResourceNetwork::toString() {
     std::string str;
 
-    for(int i = 0; i < nodes->size(); i++) {
-        str += "node" + nodes->at(i)->getId();
+    for(unsigned int i = 0; i < nodes->size(); i++) {
+        str += "node" + std::to_string(nodes->at(i)->getId());
         //std::cout << "resource node id:" << nodes->at(i)->getId() << "\n";
     }
     return str;
@@ -84,7 +101,7 @@ void ResourceNode::addNode(ResourceNode *node) {
     rnet->addNode(node);
 }
 
-ResourceNode ResourceNode::removeNode(int id) {
+void ResourceNode::removeNode(int id) {
     rnet->removeNode(id);
 }
 

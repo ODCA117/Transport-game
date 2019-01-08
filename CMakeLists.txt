@@ -12,16 +12,17 @@ file(GLOB network_SRC
 )
 file(GLOB test_SRC
   "test/network/*.cpp"
+  "test/catch.h"
 )
 
 #build library
 add_library(network SHARED ${network_SRC})
 
 #build tests
-find_package(Catch2 REQUIRED)
+#find_package(Catch2 REQUIRED)
 
 add_executable(testlib ${test_SRC} ${network_SRC})
-target_link_libraries(testlib Catch2::Catch2)
+
 
 
 add_executable(transfer src/app.cpp)
