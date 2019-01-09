@@ -105,6 +105,10 @@ void ResourceNode::removeNode(int id) {
     rnet->removeNode(id);
 }
 
+std::vector<int> ResourceNode::getConnectedNodes() {
+    return rnet->getNodes();
+}
+
 int ResourceNode::getId(){
     return id;
 }

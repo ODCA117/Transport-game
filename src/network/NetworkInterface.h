@@ -11,8 +11,8 @@ private:
     ResourceNetwork rnet;
     TransportNetwork tnet;
     //should probably not be needed??
-    void connectNodes(int node1, int node2);
-    void disconnectNodes(int node1, int node2);
+    void connectNodes(int node1ID, int node2ID);
+    void disconnectNodes(int node1ID, int node2ID);
 
 public:
     NetworkInterface();
@@ -24,6 +24,8 @@ public:
     void removeNodeForStation(int nodeID, int stationID);
 
     std::vector<int> getNodesAtStation(int stationID);
+
+    std::vector<int> getNodesAtNode(int nodeID);
 
     std::vector<int> getConnectedStations(int stationID);
 

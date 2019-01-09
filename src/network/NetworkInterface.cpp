@@ -8,7 +8,7 @@ NetworkInterface::NetworkInterface(){
 void NetworkInterface::createProducer(int id) {
     ProducerNode *node = new ProducerNode(id);
     rnet.addNode(node);
-    std::cout << "rnet size: " << rnet.size() << "\n";
+    //std::cout << "rnet size: " << rnet.size() << "\n";
 }
 
 void NetworkInterface::createConsumer(int id) {
@@ -45,17 +45,37 @@ void NetworkInterface::addNodeToStation(int nodeID, int stationID) {
     station->addNode(node);
 
     //connect station to the other stations
+    std::vector<int> nodes = station->getNodes();
+    for (int i = 0; i < nodes.size(); ++i)
+    {
+        if (nodes.at(i) != node->getId()) {
+            connectNodes(node->getId(),  nodes.at(i));
+        }
+    }
 }
 
 void NetworkInterface::removeNodeForStation(int nodeID, int stationID) {
     Station *station = tnet.getStation(stationID);
     station->removeNode(nodeID);
+
+    std::vector<int> nodes = station->getNodes();
+    for (int i = 0; i < nodes.size(); ++i)
+    {
+        if (nodes.at(i) != nodeID) {
+            disconnectNodes(nodeID,  nodes.at(i));
+        }
+    }
 }
 
 
 std::vector<int> NetworkInterface::getNodesAtStation(int stationID) {
     Station *station = tnet.getStation(stationID);
     return station->getNodes();
+}
+
+std::vector<int> NetworkInterface::getNodesAtNode(int nodeID) {
+    ResourceNode *node = (ResourceNode*)rnet.getNode(nodeID);
+    return node->getConnectedNodes();
 }
 
 std::vector<int> NetworkInterface::getConnectedStations(int stationID){
@@ -70,9 +90,16 @@ void NetworkInterface::connectStations(int station1, int station2) {
 
     s1->addStation(s2);
     s2->addStation(s1);
-    //connect nodes between these nodes
-    //1 get a list of all the nodes within the other station
-    //connect them with eachother
+
+    std::vector<int> nodesAtS1 = getNodesAtStation(station1);
+    for (int i = 0; i < nodesAtS1.size(); ++i)
+    {
+        std::vector<int> nodesAtS2 = getNodesAtStation(station2);
+        for (int j = 0; j < nodesAtS2.size(); ++j)
+        {
+            connectNodes(nodesAtS1.at(i), nodesAtS2.at(j));
+        }
+    }
 }
 
 void NetworkInterface::disconnectStations(int station1, int station2 ) {
@@ -81,6 +108,16 @@ void NetworkInterface::disconnectStations(int station1, int station2 ) {
 
     s1->removeStation(station2);
     s2->removeStation(station1);
+
+    std::vector<int> nodesAtS1 = getNodesAtStation(station1);
+    for (int i = 0; i < nodesAtS1.size(); ++i)
+    {
+        std::vector<int> nodesAtS2 = getNodesAtStation(station2);
+        for (int j = 0; j < nodesAtS2.size(); ++j)
+        {
+            disconnectNodes(nodesAtS1.at(i), nodesAtS2.at(j));
+        }
+    }
 }
 
 void NetworkInterface::update(double deltaTime) {

@@ -45,6 +45,8 @@ public:
     void addNode(ResourceNode* node);
     //removes a node from the local network
     void removeNode(int id);
+    //get nodes connected to this node
+    std::vector<int> getConnectedNodes();
     //opeator to fix how equal works on nodes
     bool operator==(const ResourceNode rhs);
     //returns id of this node

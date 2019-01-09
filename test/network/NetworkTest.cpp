@@ -116,77 +116,131 @@ TEST_CASE("Test connectStations" , "Multi-file:2") {
 }
 
 TEST_CASE("Test disconnectStations" , "Multi-file:2") {
-    REQUIRE(false);
+    NetworkInterface *ni = new NetworkInterface();
+
+    ni->createStation(0);
+    ni->createStation(1);
+
+    ni->connectStations(0, 1);
+    REQUIRE(contains(ni->getConnectedStations(0), 1));
+    REQUIRE(contains(ni->getConnectedStations(1), 0));
+
+    ni->disconnectStations(0, 1);
+    REQUIRE(contains(ni->getConnectedStations(0), 1) == 0);
+    REQUIRE(contains(ni->getConnectedStations(1), 0) == 0);
+
 }
 
 TEST_CASE("Test connect Nodes within same station", "Multi-file:2") {
-    REQUIRE(false);
+    NetworkInterface *ni = new NetworkInterface();
+
+    ni->createProducer(1);
+    ni->createProducer(3);
+    ni->createConsumer(2);
+    ni->createConsumer(4);
+
+    ni->createStation(0);
+
+    ni->addNodeToStation(1, 0);
+    ni->addNodeToStation(2, 0);
+    ni->addNodeToStation(3, 0);
+    ni->addNodeToStation(4, 0);
+
+
+    std::vector<int> nodesAt1 = ni->getNodesAtNode(1);
+    REQUIRE(nodesAt1.size() == 3);
+    REQUIRE(contains(nodesAt1, 2));
+    REQUIRE(contains(nodesAt1, 3));
+    REQUIRE(contains(nodesAt1, 4));
+
+    std::vector<int> nodesAt2 = ni->getNodesAtNode(2);
+    REQUIRE(nodesAt2.size() == 3);
+    REQUIRE(contains(nodesAt2, 1) == 1);
+
+    std::vector<int> nodesAt3 = ni->getNodesAtNode(3);
+    REQUIRE(nodesAt3.size() == 3);
+    REQUIRE(contains(nodesAt3, 1) == 1);
+
+    std::vector<int> nodesAt4 = ni->getNodesAtNode(4);
+    REQUIRE(nodesAt3.size() == 3);
+    REQUIRE(contains(nodesAt4, 1) == 1);
 }
 
 TEST_CASE("Test disconnect Nodes within same station when station is deleted", "Multi-file:2") {
-    REQUIRE(false);
+    NetworkInterface *ni = new NetworkInterface();
+    ni->createStation(0);
+
+    ni->createProducer(1);
+    ni->createProducer(3);
+    ni->createConsumer(2);
+    ni->createConsumer(4);
+
+    ni->addNodeToStation(1, 0);
+    ni->addNodeToStation(2, 0);
+    ni->addNodeToStation(3, 0);
+    ni->addNodeToStation(4, 0);
+
+    ni->removeNodeForStation(1, 0);
+
+    std::vector<int> nodesAt1 = ni->getNodesAtNode(1);
+    REQUIRE(nodesAt1.size() == 0);
+
+    std::vector<int> nodesAt2 = ni->getNodesAtNode(2);
+    REQUIRE(nodesAt2.size() == 2);
+    REQUIRE(contains(nodesAt2, 1) == 0);
+
+    std::vector<int> nodesAt3 = ni->getNodesAtNode(3);
+    REQUIRE(nodesAt3.size() == 2);
+    REQUIRE(contains(nodesAt3, 1) == 0);
+
+    std::vector<int> nodesAt4 = ni->getNodesAtNode(4);
+    REQUIRE(nodesAt3.size() == 2);
+    REQUIRE(contains(nodesAt4, 1) == 0);
+
 }
 TEST_CASE("Test connected Nodes after station connection" , "Multi-file:2") {
-    REQUIRE(false);
-    // NetworkInterface *ni = setUpNetwork();
-    //
-    // std::vector<int> p1Nodes = ni->getConnectedNodes(1);
-    // std::vector<int> p2Nodes = ni->getConnectedNodes(2);
-    //
-    // bool test = std::find(p1Nodes.begin(), p1Nodes.end(), 3) != p1Nodes.end();
-    // std::cout << p1Nodes.size()  << "\n";
-    // std::vector<int>::iterator i;
-    // for(i = p1Nodes.begin(); i != p1Nodes.end(); i++) {
-    //     std::cout << *i << "\n";
-    // }
-    // std::cout << test << "\n";
-    // //std::cout << *std::find(p1Nodes.begin(), p1Nodes.end(), 3) << "\n";
-    // //std::cout << *p1Nodes.end() << "\n";
-    //
-    // //check that p1 has all consumers connected
-    // REQUIRE(std::find(p1Nodes.begin(), p1Nodes.end(), 3) != p1Nodes.end());
-    // REQUIRE(std::find(p1Nodes.begin(), p1Nodes.end(), 4) != p1Nodes.end());
-    //
-    // //check that p2 has all consumers connected
-    // REQUIRE(std::find(p2Nodes.begin(), p2Nodes.end(), 3) != p2Nodes.end());
-    // REQUIRE(std::find(p2Nodes.begin(), p2Nodes.end(), 4) != p2Nodes.end());
-    //
-    // //consumer
-    // std::vector<int> c1Nodes = ni->getConnectedNodes(3);
-    // std::vector<int> c2Nodes = ni->getConnectedNodes(4);
-    //
-    // //check that c1 has all consumers connected
-    // REQUIRE(std::find(c1Nodes.begin(), c1Nodes.end(), 1) != c1Nodes.end());
-    // REQUIRE(std::find(c1Nodes.begin(), c1Nodes.end(), 2) != c1Nodes.end());
-    // //check that c2 has all consumers connected
-    // REQUIRE(std::find(c2Nodes.begin(), c2Nodes.end(), 1) != c2Nodes.end());
-    // REQUIRE(std::find(c2Nodes.begin(), c2Nodes.end(), 2) != c2Nodes.end());
+
+    NetworkInterface *ni = setUpNetwork();
+
+    std::vector<int> nodesAt1 = ni->getNodesAtNode(1);
+    REQUIRE(nodesAt1.size() == 3);
+    REQUIRE(contains(nodesAt1,2) == 1);
+    REQUIRE(contains(nodesAt1,3) == 1);
+    REQUIRE(contains(nodesAt1,4) == 1);
+
+    std::vector<int> nodesAt2 = ni->getNodesAtNode(2);
+    REQUIRE(nodesAt2.size() == 3);
+    REQUIRE(contains(nodesAt2, 1) == 1);
+
+    std::vector<int> nodesAt3 = ni->getNodesAtNode(3);
+    REQUIRE(nodesAt3.size() == 3);
+    REQUIRE(contains(nodesAt3, 1) == 1);
+
+    std::vector<int> nodesAt4 = ni->getNodesAtNode(4);
+    REQUIRE(nodesAt3.size() == 3);
+    REQUIRE(contains(nodesAt4, 1) == 1);
+
 }
 
 TEST_CASE("Nodes does not get nodes of other type" , "Multi-file:2") {
-    REQUIRE(false);
-    // NetworkInterface *ni = setUpNetwork();
-    //
-    // std::vector<int> p1Nodes = ni->getConnectedNodes(1);
-    // std::vector<int> p2Nodes = ni->getConnectedNodes(2);
-    //
-    // //check that p1 is not connected to p2
-    // bool exists = std::find(p1Nodes.begin(), p1Nodes.end(), 2) != p1Nodes.end();
-    // REQUIRE(!exists);
-    //
-    // //check that p2 is not connected to p1
-    // exists = std::find(p2Nodes.begin(), p2Nodes.end(), 1) != p2Nodes.end();
-    // REQUIRE(!exists);
-    //
-    // //consumer
-    // std::vector<int> c1Nodes = ni->getConnectedNodes(3);
-    // std::vector<int> c2Nodes = ni->getConnectedNodes(4);
-    //
-    // //check that c1 is not connected to c2
-    // exists = std::find(c1Nodes.begin(), c1Nodes.end(), 4) != c1Nodes.end();
-    // REQUIRE(!exists);
-    //
-    // //check that c2 is not connected to c1
-    // exists = std::find(c2Nodes.begin(), c2Nodes.end(), 3) != c2Nodes.end();
-    // REQUIRE(!exists);
+    NetworkInterface *ni = setUpNetwork();
+
+    ni->disconnectStations(5, 6);
+
+    std::vector<int> nodesAt1 = ni->getNodesAtNode(1);
+    REQUIRE(nodesAt1.size() == 1);
+    REQUIRE(contains(nodesAt1, 3) == 1);
+
+    std::vector<int> nodesAt2 = ni->getNodesAtNode(2);
+    REQUIRE(nodesAt2.size() == 1);
+    REQUIRE(contains(nodesAt2, 4) == 1);
+
+    std::vector<int> nodesAt3 = ni->getNodesAtNode(3);
+    REQUIRE(nodesAt3.size() == 1);
+    REQUIRE(contains(nodesAt3, 1) == 1);
+
+    std::vector<int> nodesAt4 = ni->getNodesAtNode(4);
+    REQUIRE(nodesAt4.size() == 1);
+    REQUIRE(contains(nodesAt4, 2) == 1);
+
 }
